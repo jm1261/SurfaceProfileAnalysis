@@ -1,5 +1,6 @@
 import tkinter as tk
-from pathlib import Path, PurePosixPath
+
+from pathlib import Path
 from tkinter import filedialog
 
 
