@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+
 from matplotlib.widgets import RectangleSelector
 
 
@@ -117,12 +118,9 @@ def trim_region(x_array,
         region: <string> region identifier for dictionary keys
     Returns:
         index: <dict> dictionary containing:
-            Min Trim Index: <int> minimum index in full array for region of
-                            interest
-            Max Trim Index: <int> maximum index in full array for region of
-                            interest
-            Trimmed X: <array> trimmed x array
-            Trimmed Y: <array> trimmed y array
+            Region Trim Index: <array> min, max indices
+            Region Trimmed X: <array> trimmed x array
+            Region Trimmed Y: <array> trimmed y array
     '''
     x1, _, x2, _ = region_interest(
         x=x_array,
