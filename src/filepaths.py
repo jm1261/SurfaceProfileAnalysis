@@ -1,5 +1,4 @@
 import os
-import re
 
 from pathlib import Path
 from sys import platform
@@ -44,15 +43,16 @@ def directory_paths(root_path):
     Args:
         root_path: <string> path to root directory
     Returns:
-        film_path: <string> path to dektak directory
-        grating_path: <string> path to afm directory
+        dektak_path: <string> path to dektak directory
+        afm_path: <string> path to afm directory
         results_path: <string> path to results directory
+        info: <dict> info.json dictionary
     '''
     info = load_json(file_path=Path(f'{root_path}/info.json'))
-    film_path = Path(f'{root_path}{info["Film Path"]}')
-    grating_path = Path(f'{root_path}{info["Grating Path"]}')
+    dektak_path = Path(f'{root_path}{info["Dektak Path"]}')
+    afm_path = Path(f'{root_path}{info["AFM Path"]}')
     results_path = Path(f'{root_path}{info["Results Path"]}')
-    return film_path, grating_path, results_path
+    return dektak_path, afm_path, results_path, info
 
 
 def get_files_paths(root_path,
@@ -108,7 +108,7 @@ def get_filename(file_path):
     return os.path.splitext(os.path.basename(file_path))[0]
 
 
-def grating_information(file_path):
+def sample_information(file_path):
     '''
     Pull sample information from grating file name string.
     Args:
@@ -117,7 +117,8 @@ def grating_information(file_path):
         sample_parameters: <dict>
             File Name
             File Path
-            Sample Name
+            Primary String
+            Secondary String
             File Type [AFM/Dektak]
     '''
     file_name = get_filename(file_path=file_path)
@@ -126,30 +127,8 @@ def grating_information(file_path):
     return {
         "File Name": file_name,
         "File Path": f'{file_path}',
-        "Sample Name": file_split[0],
-        "Grating Period": file_split[1],
-        "File Type": parent}
-
-
-def film_information(file_path):
-    '''
-    Pull sample information from film file name string.
-    Args:
-        file_path: <string> path to file
-    Returns:
-        sample_parameters: <dict>
-            File Name
-            File Path
-            Repeat Number
-            File Type [AFM/Dektak]
-    '''
-    file_name = get_filename(file_path=file_path)
-    parent = parent_directory(file_path=file_path)
-    file_split = file_name.split('_')
-    return {
-        "File Name": file_name,
-        "File Path": f'{file_path}',
-        "Repeat Number": file_split[-1],
+        "Primary String": file_split[0],
+        "Secondary String": file_split[1],
         "File Type": parent}
 
 
@@ -165,9 +144,9 @@ def find_all_batches(file_paths):
     '''
     batches = {}
     for file in file_paths:
-        sample_details = grating_information(file_path=file)
-        if sample_details["Sample Name"] in batches.keys():
-            batches[f'{sample_details["Sample Name"]}'].append(file)
+        sample_details = sample_information(file_path=file)
+        if sample_details["Primary String"] in batches.keys():
+            batches[f'{sample_details["Primary String"]}'].append(file)
         else:
-            batches.update({f'{sample_details["Sample Name"]}': [file]})
+            batches.update({f'{sample_details["Primary String"]}': [file]})
     return batches

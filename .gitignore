@@ -129,5 +129,5 @@ dmypy.json
 .pyre/
 
 # Ignore results
-*.json
 *.csv
+*.png

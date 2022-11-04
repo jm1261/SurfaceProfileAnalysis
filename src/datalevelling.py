@@ -195,7 +195,9 @@ def calculate_filmthickness(initial_parameters,
 def calculated_level_film_thickness(x_array,
                                     y_array,
                                     file_name,
-                                    sample_name):
+                                    sample_name,
+                                    plot_files,
+                                    out_path):
     '''
     Calculate the film thickness, error, quadratic parameters, and quadratic
     parameter errors for levelled film thickness data.
@@ -204,6 +206,8 @@ def calculated_level_film_thickness(x_array,
         y_array: <array> y-data array
         file_name: <string> file identifier
         sample_name: <string> sample name identifier
+        plot_files: <string> "True" or "False" for plotting output
+        out_path: <string> path to save
     Returns:
         step_results: <dict>
             Step Height (nm)
@@ -244,4 +248,80 @@ def calculated_level_film_thickness(x_array,
         y_step=y_step,
         scales=scales,
         sample_name=sample_name)
+    if plot_files == "True":
+        plot_dektak_thicknesses(
+            x_array=x_array,
+            y_array=y_array,
+            quadratic_parameters=step_results[f'{sample_name} Quadratic'],
+            step_height=step_results[f'{sample_name} Film Thickness'],
+            out_path=out_path)
     return step_results
+
+
+def plot_dektak_thicknesses(x_array,
+                            y_array,
+                            quadratic_parameters,
+                            step_height,
+                            out_path):
+    '''
+    Plot dektak step height calculation with data levelled.
+    Args:
+        x_array: <array> x-data array
+        y_array: <array> y-data array
+        quadratic_parameters: <array> quadratic parameters [a, b, c]
+        step_height: <float> calculated step height (nm)
+        out_path: <string> path to save
+    Returns:
+        None
+    '''
+    fig, (ax1, ax2) = plt.subplots(
+        nrows=1,
+        ncols=2,
+        figsize=[10, 7])
+    ax1.plot(
+        x_array,
+        y_array,
+        'b',
+        lw=2,
+        label='Data')
+    y_baseline = standard_quadratic_equation(
+        a=quadratic_parameters[0],
+        b=quadratic_parameters[1],
+        c=quadratic_parameters[2],
+        x=x_array)
+    ax1.plot(
+        x_array,
+        y_baseline,
+        'r',
+        lw=2,
+        label='Quadratic Baseline')
+    ax1.legend(
+        loc=0,
+        prop={'size': 14})
+    y_corrected = y_array - y_baseline
+    ax2.plot(
+        x_array,
+        y_corrected,
+        'b',
+        lw=2,
+        label='Background Corrected Data')
+    y_step = step_height * np.ones_like(y_array)
+    ax2.plot(
+        x_array,
+        y_step,
+        'r',
+        lw=2,
+        label=f'step = {step_height:.2f} nm')
+    ax2.plot(
+        x_array,
+        np.zeros_like(y_array),
+        'g',
+        lw=2)
+    ax2.legend(
+        loc=0,
+        prop={'size': 14})
+    fig.tight_layout()
+    plt.savefig(out_path)
+    fig.clf()
+    plt.cla()
+    plt.close(fig)

@@ -1,6 +1,7 @@
 import numpy as np
 
 from src.userinput import trim_region
+from src.plotting import xy_tworois_plot
 
 
 def standard_error_mean(x):
@@ -74,7 +75,9 @@ def calc_stepheight(region_1,
 def calculate_grating_thickness(x_array,
                                 y_array,
                                 file_name,
-                                sample_name):
+                                sample_name,
+                                plot_files,
+                                out_path):
     '''
     Calculate grating thickness based on regions of interest.
     Args:
@@ -82,6 +85,8 @@ def calculate_grating_thickness(x_array,
         y_array: <array> y-data array
         file_name: <string> file identifier string
         sample_name: <string> sample identifier string
+        plot_files: <string> "True" or "False" for plotting output
+        out_path: <string> path to save
     Returns:
         thickness_results <dict>
             Region 1 Trim Index
@@ -111,4 +116,19 @@ def calculate_grating_thickness(x_array,
         region1,
         **region2,
         **step_height)
+    if plot_files == 'True':
+        xy_tworois_plot(
+            x=x_array,
+            y=y_array,
+            label=f'{sample_name}',
+            text_string=step_height[f'{sample_name} Step Height'],
+            x1=min(region1[f'{sample_name} Region 1 Trimmed X']),
+            x2=max(region1[f'{sample_name} Region 1 Trimmed X']),
+            x3=min(region2[f'{sample_name} Region 2 Trimmed X']),
+            x4=max(region2[f'{sample_name} Region 2 Trimmed X']),
+            xlabel='Lateral [um]',
+            ylabel='Profile [nm]',
+            title=f'{file_name}',
+            out_path=out_path,
+            line=True)
     return thickness_results
