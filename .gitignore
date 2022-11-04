@@ -131,3 +131,4 @@ dmypy.json
 # Ignore results
 *.csv
 *.png
+Results/
