@@ -1,0 +1,71 @@
+{
+  "Batch Name": "N6",
+  "File Name": [
+    "N6_Repeat1_Height",
+    "N6_Repeat2_Height",
+    "N6_Repeat3_Height",
+    "N6_Repeat4_Height"
+  ],
+  "File Path": [
+    "C:\\Users\\joshs\\github\\PhD_Project\\StepHeightFinder\\Dektak\\N6_Repeat1_Height.csv",
+    "C:\\Users\\joshs\\github\\PhD_Project\\StepHeightFinder\\Dektak\\N6_Repeat2_Height.csv",
+    "C:\\Users\\joshs\\github\\PhD_Project\\StepHeightFinder\\Dektak\\N6_Repeat3_Height.csv",
+    "C:\\Users\\joshs\\github\\PhD_Project\\StepHeightFinder\\Dektak\\N6_Repeat4_Height.csv"
+  ],
+  "Secondary String": [
+    "Repeat1",
+    "Repeat2",
+    "Repeat3",
+    "Repeat4"
+  ],
+  "Repeat1 Film Thickness": 146.4954048990431,
+  "Repeat1 Film Thickness Error": 0.05366786923611741,
+  "Repeat1 Quadratic": [
+    -120.98555744385499,
+    294.0025613231033,
+    -155.2884245502077
+  ],
+  "Repeat1 Quadratic Errors": [
+    0.2091134038859352,
+    0.2597662978013007,
+    0.0936928448039415
+  ],
+  "Repeat2 Film Thickness": 153.2931421629015,
+  "Repeat2 Film Thickness Error": 0.05022058181585417,
+  "Repeat2 Quadratic": [
+    -67.4047796163841,
+    -130.8389202878486,
+    -15.125825279348538
+  ],
+  "Repeat2 Quadratic Errors": [
+    0.13552751672078342,
+    0.16563290335864064,
+    0.038128774246489486
+  ],
+  "Repeat3 Film Thickness": -147.3393474413299,
+  "Repeat3 Film Thickness Error": 0.07259525571167745,
+  "Repeat3 Quadratic": [
+    -30.588352976111544,
+    230.98060071082102,
+    -17.473365216031596
+  ],
+  "Repeat3 Quadratic Errors": [
+    0.3297002210320382,
+    0.5405756687141462,
+    0.15888721799569333
+  ],
+  "Repeat4 Film Thickness": 157.49002717152436,
+  "Repeat4 Film Thickness Error": 0.07038667551881779,
+  "Repeat4 Quadratic": [
+    49.954342249394486,
+    -155.60804733645273,
+    -64.33211323283945
+  ],
+  "Repeat4 Quadratic Errors": [
+    0.9577334322850404,
+    1.1230259132829357,
+    0.2817996613555589
+  ],
+  "Average Result": 151.1544804186997,
+  "Average Error": 2.5976792694989843
+}
