@@ -47,7 +47,7 @@ def batch_filmthickness(batch_name,
         film_thicknesses.append(
             step_results[
                 f'{sample_details["Repeat Number"]} Film Thickness'])
-    thickness_results = anal.average_and_error(x=film_thicknesses)
+    thickness_results = anal.average_step_and_error(x=film_thicknesses)
     results_dictionary = dict(
         batch_results,
         **thickness_results)
@@ -71,5 +71,5 @@ if __name__ == '__main__':
             file_paths=filepaths)
 
         io.save_json_dicts(
-            out_path=Path(f'{results_path}/{batch}_Series_FilmThickness.json'),
+            out_path=Path(f'{results_path}/{batch}_FilmThickness.json'),
             dictionary=results_dictionary)
