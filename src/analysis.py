@@ -27,9 +27,11 @@ def standard_addition_error(delta_x,
     return np.sqrt((delta_x ** 2) + (delta_y ** 2))
 
 
-def average_and_error(x):
+def average_step_and_error(x):
     '''
-    Calculate average array and return standard error on the mean.
+    Calculate average array and return standard error on the mean. Takes the
+    absolute value of step height x, to counter any differences in measuring
+    techniques that result in negative step heights.
     Args:
         x: <array> data array
     Returns:
@@ -38,8 +40,8 @@ def average_and_error(x):
             Average Error
     '''
     return {
-        "Average Result": np.average(x),
-        "Average Error": standard_error_mean(x=x)}
+        "Average Result": np.average(np.abs(x)),
+        "Average Error": standard_error_mean(x=np.abs(x))}
 
 
 def calc_stepheight(region_1,

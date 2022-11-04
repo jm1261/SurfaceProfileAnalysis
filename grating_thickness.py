@@ -65,5 +65,5 @@ if __name__ == '__main__':
 
         io.save_json_dicts(
             out_path=Path(
-                f'{results_path}/{batch}_Series_GratingThickness.json'),
+                f'{results_path}/{batch}_GratingThickness.json'),
             dictionary=results_dictionary)

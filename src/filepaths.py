@@ -153,24 +153,6 @@ def film_information(file_path):
         "File Type": parent}
 
 
-def find_sample_batch(sample_name):
-    '''
-    Find series/batch name from sample name string. File name string should have
-    the sample name (e.g. AA1, A2, Z8) at the start of the file.
-    Args:
-        sample_name: <string> sample name string with batch and sample number at
-                    start
-    Returns:
-        batch_name: <string> batch name string
-    '''
-    split = re.split('\d+', sample_name)
-    batch_name = [
-        s.strip() for s in split
-        if (s.strip()).isalpha()
-        and s.strip() != '']
-    return batch_name
-
-
 def find_all_batches(file_paths):
     '''
     Find all sample batches in series of file paths and append file paths to
@@ -184,9 +166,8 @@ def find_all_batches(file_paths):
     batches = {}
     for file in file_paths:
         sample_details = grating_information(file_path=file)
-        batch = find_sample_batch(sample_name=sample_details['Sample Name'])
-        if batch[0] in batches.keys():
-            batches[f'{batch[0]}'].append(file)
+        if sample_details["Sample Name"] in batches.keys():
+            batches[f'{sample_details["Sample Name"]}'].append(file)
         else:
-            batches.update({f'{batch[0]}': [file]})
+            batches.update({f'{sample_details["Sample Name"]}': [file]})
     return batches
