@@ -1,4 +1,5 @@
 import os
+import numpy as np
 
 from pathlib import Path
 from sys import platform
@@ -23,67 +24,65 @@ def check_platform():
     return operating_system
 
 
-def extractfile(dir_path,
-                file_string):
-    '''
-    Pull file from directory path.
-    Args:
-        dir_path: <string> path to file
-        file_string: <string> string contained within file name
-    Returns:
-        array: <array> array of selected files
-    '''
-    directory_list = sorted(os.listdir(dir_path))
-    return [file for file in directory_list if file_string in file]
-
-
-def directory_paths(root_path):
+def get_directory_paths(root_path):
     '''
     Get target data path and results path from info dictionary file.
     Args:
         root_path: <string> path to root directory
     Returns:
-        dektak_path: <string> path to dektak directory
-        afm_path: <string> path to afm directory
+        data_path: <string> path to data directory
+        bg_path: <string> path to background directory
         results_path: <string> path to results directory
-        info: <dict> info.json dictionary
+        info: <dict> information dictionary (info.json)
     '''
     info = load_json(file_path=Path(f'{root_path}/info.json'))
-    dektak_path = Path(f'{root_path}{info["Dektak Path"]}')
-    afm_path = Path(f'{root_path}{info["AFM Path"]}')
-    results_path = Path(f'{root_path}{info["Results Path"]}')
-    return dektak_path, afm_path, results_path, info
+    directory_paths = {}
+    for key, value in info.items():
+        if 'Path' in key:
+            directory_paths.update({key: Path(f'{root_path}/{value}')})
+    return info, directory_paths
 
 
-def get_files_paths(root_path,
+def extractfile(directory_path,
+                file_string):
+    '''
+    Pull file from directory path.
+    Args:
+        directory_path: <string> path to file
+        file_string: <string> string contained within file name
+    Returns:
+        array: <array> array of selected files
+    '''
+    directory_list = sorted(os.listdir(directory_path))
+    return [file for file in directory_list if file_string in file]
+
+
+def get_files_paths(directory_path,
                     file_string):
     '''
-    Get target files depending on operating system.
+    Get target files and directory paths depending on the operating system.
     Args:
-        root_path: <string> path to root folder
+        directory_path: <string> path to data directory
         file_string: <string> file extension (e.g. .csv)
     Returns:
         file_paths: <string> path to files
     '''
     operating_system = check_platform()
     if operating_system == 'Linux' or operating_system == 'Mac':
-        directory_path = directory_paths(root_path=root_path)
         file_list = extractfile(
-            dir_path=directory_path,
+            directory_path=directory_path,
             file_string=file_string)
-        file_paths = [
-            Path(directory_path).joinpath(file)
-            for file in file_list]
+        file_paths = [Path(f'{directory_path}/{file}') for file in file_list]
     elif operating_system == 'Windows':
         file_paths = prompt_for_path(
-            default=root_path,
+            default=directory_path,
             title='Select Target File(s)',
             file_path=True,
             file_type=[(f'{file_string}', f'*{file_string}')])
     return file_paths
 
 
-def parent_directory(file_path):
+def get_parent_directory(file_path):
     '''
     Find parent directory name of target file.
     Args:
@@ -108,45 +107,89 @@ def get_filename(file_path):
     return os.path.splitext(os.path.basename(file_path))[0]
 
 
-def sample_information(file_path):
+def thickness_sample_information(file_path):
     '''
-    Pull sample information from grating file name string.
+    Pull sample parameters from file name string for various processes.
     Args:
         file_path: <string> path to file
     Returns:
         sample_parameters: <dict>
-            File Name
-            File Path
-            Primary String
-            Secondary String
-            File Type [AFM/Dektak]
     '''
+    parent_directory = get_parent_directory(file_path=file_path)
     file_name = get_filename(file_path=file_path)
-    parent = parent_directory(file_path=file_path)
     file_split = file_name.split('_')
     return {
-        "File Name": file_name,
-        "File Path": f'{file_path}',
-        "Primary String": file_split[0],
-        "Secondary String": file_split[1],
-        "File Type": parent}
+        "Parent Directory": parent_directory,
+        f'{parent_directory} File Name': file_name,
+        f'{parent_directory} File Path': f'{file_path}',
+        f'{parent_directory} Primary String': file_split[0],
+        f'{parent_directory} Secondary String': file_split[1]}
 
 
-def find_all_batches(file_paths):
+def sample_information(file_path):
+    '''
+    Pull sample parameters based on which type of file is being analysed.
+    Args:
+        file_path: <string> path to file
+    Returns:
+        sample_parameters: <dict>
+    '''
+    parent_directory = get_parent_directory(file_path=file_path)
+    if parent_directory == 'AFM' or parent_directory == 'Dektak':
+        sample_parameters = thickness_sample_information(
+            file_path=file_path)
+    else:
+        sample_parameters = {}
+    return sample_parameters
+
+
+def get_all_batches(file_paths):
     '''
     Find all sample batches in series of file paths and append file paths to
     batch names for loop processing.
     Args:
         file_paths: <array> array of target file paths
     Returns:
+        parent: <string> parent directory string
         batches: <dict>
             Batch inidicators: respective file paths for all samples in batch
     '''
     batches = {}
     for file in file_paths:
-        sample_details = sample_information(file_path=file)
-        if sample_details["Primary String"] in batches.keys():
-            batches[f'{sample_details["Primary String"]}'].append(file)
+        sample_parameters = sample_information(file_path=file)
+        parent = sample_parameters['Parent Directory']
+        key = f'{parent} Primary String'
+        if sample_parameters[key] in batches.keys():
+            batches[f'{sample_parameters[key]}'].append(file)
         else:
-            batches.update({f'{sample_details["Primary String"]}': [file]})
-    return batches
+            batches.update({f'{sample_parameters[key]}': [file]})
+    return parent, batches
+
+
+def update_batch_dictionary(parent,
+                            batch_name,
+                            file_paths):
+    '''
+    Update batch results dictionary.
+    Args:
+        parent: <string> parent directory identifier
+        batch_name: <string> batch name identifier
+        file_paths: <array> list of target file paths
+    Returns:
+        batch_dictionary: <dict>
+            Batch Name
+            File Names
+            File Paths
+            Secondary Strings
+    '''
+    batch_dictionary = {
+        f'{parent} Batch Name': batch_name,
+        f'{parent} File Name': [],
+        f'{parent} File Path': [],
+        f'{parent} Secondary String': []}
+    for file in file_paths:
+        sample_parameters = sample_information(file_path=file)
+        for key, value in sample_parameters.items():
+            if key in batch_dictionary.keys():
+                batch_dictionary[key].append(value)
+    return batch_dictionary
