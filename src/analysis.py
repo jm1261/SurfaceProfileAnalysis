@@ -1,6 +1,7 @@
 import numpy as np
+import scipy.optimize as opt
 
-from src.userinput import trim_region
+from src.userinput import trimindices
 from src.plotting import xy_tworois_plot
 
 
@@ -98,19 +99,23 @@ def calculate_grating_thickness(x_array,
             Step Height
             Step Height Error
     '''
-    region1 = trim_region(
+    region1 = trimindices(
         x_array=x_array,
         y_array=y_array,
         file_name=file_name,
         region=f'{sample_name} Region 1')
-    region2 = trim_region(
+    region2 = trimindices(
         x_array=x_array,
         y_array=y_array,
         file_name=file_name,
         region=f'{sample_name} Region 2')
     step_height = calc_stepheight(
-        region_1=region1[f'{sample_name} Region 1 Trimmed Y'],
-        region_2=region2[f'{sample_name} Region 2 Trimmed Y'],
+        region_1=y_array[
+            region1[f'{sample_name} Region 1 Trim Index'][0]:
+            region1[f'{sample_name} Region 1 Trim Index'][1]],
+        region_2=y_array[
+            region2[f'{sample_name} Region 2 Trim Index'][0]:
+            region2[f'{sample_name} Region 2 Trim Index'][1]],
         sample_name=sample_name)
     thickness_results = dict(
         region1,

@@ -43,7 +43,8 @@ def toggle_selector(event):
 
 
 def region_interest(x, y,
-                    file_name):
+                    file_name,
+                    y_limit=False):
     '''
     Allows uer to select an area of a graph of interest. Plots an x-y graph and
     uses matplotlib rectangle selector to select region of interest. The x, y
@@ -51,7 +52,8 @@ def region_interest(x, y,
     Args:
         x: <array> x-axis data array
         y: <array> y-axis data array
-        file_name: <string> file name identifier string
+        file_name: <string> file identifier for data label
+        y_limit: <tuple/bool> if set, (ymin, ymax), else False
     Returns:
         x1: <float> x coordinate for the start position of region of interest
         y1: <float> y coordinate for the start position of region of interest
@@ -87,6 +89,8 @@ def region_interest(x, y,
         fontweight='bold',
         color='black')
     ax.set_xlim(min(x), max(x))
+    if y_limit:
+        ax.set_ylim(y_limit)
     print('\n   click  -->  release')
     toggle_selector.RS = RectangleSelector(
         ax,
@@ -105,10 +109,11 @@ def region_interest(x, y,
     return x1, y1, x2, y2
 
 
-def trim_region(x_array,
+def trimindices(x_array,
                 y_array,
                 file_name,
-                region):
+                region,
+                y_limit=False):
     '''
     Trim arrays to region of interest, return the array min/max indices.
     Args:
@@ -116,6 +121,7 @@ def trim_region(x_array,
         y_array: <array> y-axis data
         file_name: <string> file name identifier string
         region: <string> region identifier for dictionary keys
+        y_limit: <tuple/bool> if set, (ymin, ymax), else False
     Returns:
         index: <dict> dictionary containing:
             Region Trim Index: <array> min, max indices
@@ -125,12 +131,9 @@ def trim_region(x_array,
     x1, _, x2, _ = region_interest(
         x=x_array,
         y=y_array,
-        file_name=file_name)
+        file_name=file_name,
+        y_limit=y_limit)
     min_index = np.argmin(np.abs(x_array - x1))
     max_index = np.argmin(np.abs(x_array - x2))
-    trim_x = x_array[min_index: max_index]
-    trim_y = y_array[min_index: max_index]
     return {
-        f'{region} Trim Index': [min_index, max_index],
-        f'{region} Trimmed X': [x for x in trim_x],
-        f'{region} Trimmed Y': [y for y in trim_y]}
+        f'{region} Trim Index': [min_index, max_index]}

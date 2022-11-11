@@ -57,22 +57,24 @@ def read_afm_file(file_path):
     return lateral, profile
 
 
-def read_thickness_file(sample_details):
+def read_thickness_file(parent_directory,
+                        file_path):
     '''
     Reads either dektak or AFM file, depending on parent directory name. Must
     ensure thickness measurements are within a directory called AFM or Dektak.
     Args:
+        parent_directory: <string> parent directory identifier
         file_path: <string> path to file
     Returns:
         lateral: <array> lateral position array (x-array) [mm]
         profile: <array> surface profile array (y-array) [nm]
     '''
-    if sample_details["File Type"] == 'AFM':
+    if parent_directory == 'AFM':
         lateral, profile = read_afm_file(
-            file_path=sample_details["File Path"])
-    elif sample_details["File Type"] == 'Dektak':
+            file_path=file_path)
+    elif parent_directory == 'Dektak':
         lateral, profile = read_dektak_file(
-            file_path=sample_details["File Path"])
+            file_path=file_path)
     else:
         lateral = []
         profile = []
