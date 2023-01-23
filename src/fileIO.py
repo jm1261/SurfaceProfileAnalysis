@@ -48,11 +48,18 @@ def read_afm_file(file_path):
         lateral: <array> lateral position array (x-array) [mm]
         profile: <array> surface profile array (y-array) [nm]
     '''
-    lateral, profile = np.genfromtxt(
-        fname=file_path,
-        delimiter=',',
-        skip_header=1,
-        unpack=True)
+    try:
+        lateral, profile = np.genfromtxt(
+            fname=file_path,
+            delimiter=',',
+            skip_header=1,
+            unpack=True)
+    except:
+        lateral, profile = np.genfromtxt(
+            fname=file_path,
+            delimiter='\t',
+            skip_header=1,
+            unpack=True)
     lateral /= 1000  # convert to mm
     return lateral, profile
 
