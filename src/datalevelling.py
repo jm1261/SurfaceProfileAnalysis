@@ -186,8 +186,8 @@ def calculate_filmthickness(initial_parameters,
     cov = np.linalg.inv(raw_errors.T.dot(raw_errors))
     a_error, b_error, c_error, step_error = np.sqrt(np.diag(cov))
     return {
-        f'{sample_name} Film Thickness': step_height,
-        f'{sample_name} Film Thickness Error': step_error,
+        f'{sample_name} Thickness': step_height,
+        f'{sample_name} Thickness Error': step_error,
         f'{sample_name} Quadratic': [a, b, c],
         f'{sample_name} Quadratic Errors': [a_error, b_error, c_error]}
 
@@ -253,7 +253,7 @@ def calculated_level_film_thickness(x_array,
             x_array=x_array,
             y_array=y_array,
             quadratic_parameters=step_results[f'{sample_name} Quadratic'],
-            step_height=step_results[f'{sample_name} Film Thickness'],
+            step_height=step_results[f'{sample_name} Thickness'],
             out_path=out_path)
     return step_results
 
@@ -277,7 +277,8 @@ def plot_dektak_thicknesses(x_array,
     fig, (ax1, ax2) = plt.subplots(
         nrows=1,
         ncols=2,
-        figsize=[10, 7])
+        figsize=[round(15 * 0.393701, 2), round(9 * 0.393701, 2)],
+        dpi=600)
     ax1.plot(
         x_array,
         y_array,
@@ -297,14 +298,14 @@ def plot_dektak_thicknesses(x_array,
         label='Quadratic Baseline')
     ax1.legend(
         loc=0,
-        prop={'size': 14})
+        prop={'size': 10})
     y_corrected = y_array - y_baseline
     ax2.plot(
         x_array,
         y_corrected,
         'b',
         lw=2,
-        label='Background Corrected Data')
+        label='Level Data')
     y_step = step_height * np.ones_like(y_array)
     ax2.plot(
         x_array,
@@ -319,7 +320,27 @@ def plot_dektak_thicknesses(x_array,
         lw=2)
     ax2.legend(
         loc=0,
-        prop={'size': 14})
+        prop={'size': 10})
+    ax1.set_xlabel(
+        'Lateral (mm)',
+        fontsize=15,
+        fontweight='bold',
+        color='black')
+    ax2.set_xlabel(
+        'Lateral (mm)',
+        fontsize=15,
+        fontweight='bold',
+        color='black')
+    ax1.set_ylabel(
+        'Vertical (nm)',
+        fontsize=15,
+        fontweight='bold',
+        color='black')
+    ax2.set_ylabel(
+        'Vertical (nm)',
+        fontsize=15,
+        fontweight='bold',
+        color='black')
     fig.tight_layout()
     plt.savefig(out_path)
     fig.clf()

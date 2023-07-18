@@ -1,6 +1,55 @@
 import matplotlib.pyplot as plt
 
 
+def plotafm(x, y, label,
+            xlabel, ylabel, title, out_path,
+            line=False):
+    fig, ax = plt.subplots(
+        1,
+        figsize=[round(7.5 * 0.393701, 2), round(9 * 0.393701, 2)],
+        dpi=600)
+    if line:
+        ax.plot(
+            x, y,
+            'b',
+            lw=2,
+            label=label)
+    else:
+        ax.plot(
+            x, y,
+            'bx',
+            markersize=4,
+            label=label)
+    ax.grid(True)
+    #ax.legend(
+    #    frameon=True,
+    #    loc=0,
+    #    prop={'size': 10})
+    ax.set_xlabel(
+        xlabel,
+        fontsize=15,
+        fontweight='bold',
+        color='black')
+    ax.set_ylabel(
+        ylabel,
+        fontsize=15,
+        fontweight='bold',
+        color='black')
+    #ax.set_title(
+    #    title,
+    #    fontsize=18,
+    #    fontweight='bold',
+    #    color='black')
+    ax.tick_params(
+        axis='both',
+        colors='black',
+        labelsize=10)
+    plt.savefig(out_path, bbox_inches='tight')
+    fig.clf()
+    plt.cla()
+    plt.close(fig)
+
+
 def xy_tworois_plot(x, y, label, text_string,
                     x1, x2, x3, x4,
                     xlabel, ylabel, title, out_path,
@@ -28,7 +77,8 @@ def xy_tworois_plot(x, y, label, text_string,
     '''
     fig, ax = plt.subplots(
         1,
-        figsize=[10, 7])
+        figsize=[round(7.5 * 0.393701, 2), round(9 * 0.393701, 2)],
+        dpi=600)
     if line:
         ax.plot(
             x, y,
@@ -42,10 +92,10 @@ def xy_tworois_plot(x, y, label, text_string,
             markersize=4,
             label=label)
     ax.grid(True)
-    ax.legend(
-        frameon=True,
-        loc=0,
-        prop={'size': 14})
+    #ax.legend(
+    #    frameon=True,
+    #    loc=0,
+    #    prop={'size': 10})
     ax.axvline(
         x=x1,
         color='g',
@@ -64,23 +114,23 @@ def xy_tworois_plot(x, y, label, text_string,
         linestyle='--')
     ax.set_xlabel(
         xlabel,
-        fontsize=14,
+        fontsize=15,
         fontweight='bold',
         color='black')
     ax.set_ylabel(
         ylabel,
-        fontsize=14,
+        fontsize=15,
         fontweight='bold',
         color='black')
-    ax.set_title(
-        title,
-        fontsize=18,
-        fontweight='bold',
-        color='black')
+    #ax.set_title(
+    #    title,
+    #    fontsize=18,
+    #    fontweight='bold',
+    #    color='black')
     ax.tick_params(
         axis='both',
         colors='black',
-        labelsize=14)
+        labelsize=10)
     props = dict(
         boxstyle='round',
         facecolor='wheat',
@@ -90,10 +140,10 @@ def xy_tworois_plot(x, y, label, text_string,
         0.05,
         text_string,
         transform=ax.transAxes,
-        fontsize=14,
+        fontsize=10,
         verticalalignment='top',
         bbox=props)
-    plt.savefig(out_path)
+    plt.savefig(out_path, bbox_inches='tight')
     fig.clf()
     plt.cla()
     plt.close(fig)

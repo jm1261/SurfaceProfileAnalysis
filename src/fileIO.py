@@ -60,7 +60,6 @@ def read_afm_file(file_path):
             delimiter='\t',
             skip_header=1,
             unpack=True)
-    lateral /= 1000  # convert to mm
     return lateral, profile
 
 

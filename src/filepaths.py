@@ -7,23 +7,6 @@ from src.fileIO import load_json
 from src.GUI import prompt_for_path
 
 
-def check_platform():
-    '''
-    Check operating system.
-    Args:
-        None
-    Returns:
-        operating_system: <string> "Windows", "Linux", or "Mac"
-    '''
-    if platform == 'linux' or platform == 'linux2':
-        operating_system = 'Linux'
-    elif platform == 'darwin':
-        operating_system = 'Mac'
-    elif platform == 'win32':
-        operating_system = 'Windows'
-    return operating_system
-
-
 def get_directory_paths(root_path):
     '''
     Get target data path and results path from info dictionary file.
@@ -39,47 +22,24 @@ def get_directory_paths(root_path):
     directory_paths = {}
     for key, value in info.items():
         if 'Path' in key:
-            directory_paths.update({key: Path(f'{root_path}/{value}')})
+            directory_paths.update({key: Path(f'{value}')})
     return info, directory_paths
-
-
-def extractfile(directory_path,
-                file_string):
-    '''
-    Pull file from directory path.
-    Args:
-        directory_path: <string> path to file
-        file_string: <string> string contained within file name
-    Returns:
-        array: <array> array of selected files
-    '''
-    directory_list = sorted(os.listdir(directory_path))
-    return [file for file in directory_list if file_string in file]
 
 
 def get_files_paths(directory_path,
                     file_string):
     '''
-    Get target files and directory paths depending on the operating system.
+    Get target file paths for target files in a target directory.
     Args:
         directory_path: <string> path to data directory
         file_string: <string> file extension (e.g. .csv)
     Returns:
         file_paths: <string> path to files
     '''
-    operating_system = check_platform()
-    if operating_system == 'Linux' or operating_system == 'Mac':
-        file_list = extractfile(
-            directory_path=directory_path,
-            file_string=file_string)
-        file_paths = [Path(f'{directory_path}/{file}') for file in file_list]
-    elif operating_system == 'Windows':
-        file_paths = prompt_for_path(
-            default=directory_path,
-            title='Select Target File(s)',
-            file_path=True,
-            file_type=[(f'{file_string}', f'*{file_string}')])
-    return file_paths
+    directory_list = sorted(os.listdir(directory_path))
+    return [
+        Path(f'{directory_path}/{file}')
+        for file in directory_list if file_string in file]
 
 
 def get_parent_directory(file_path):
@@ -122,8 +82,8 @@ def thickness_sample_information(file_path):
         "Parent Directory": parent_directory,
         f'{parent_directory} File Name': file_name,
         f'{parent_directory} File Path': f'{file_path}',
-        f'{parent_directory} Primary String': file_split[0],
-        f'{parent_directory} Secondary String': file_split[1]}
+        f'{parent_directory} Primary String': ('_').join(file_split[0:2]),
+        f'{parent_directory} Secondary String': ('_').join(file_split[2:])}
 
 
 def sample_information(file_path):

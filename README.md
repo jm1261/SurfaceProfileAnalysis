@@ -4,6 +4,11 @@ This software is designed for analysis of thin film structures using either atom
 
 This software was created by Josh Male in November 2022 as part of the ongoing analyis of thin film structures. The code is under an MIT License and can be freely used.
 
+## Updates that need changing in readme.md
+
+Changed the way the directory path function works, no longer uses interactive selector for windows devices, or relative paths for mac/linux devices, now only uses absolute file paths for simplicity. All controlled through info.json.
+Need to check that all the functions are correctly commented in their descriptions. It would appear many have been copied over from other areas and have the incorrect descriptions below them. Also need to make sure the function descriptions follow the convention.
+
 ## Contents
 
 * [General Information](#general-information)

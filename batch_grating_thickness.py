@@ -52,7 +52,11 @@ def batch_grating_thickness(batch_name,
             out_path=Path(
                 f'{figure_path}/'
                 f'{batch_name}_{out_string}'
-                f'_GratingThickness.png'))
+                f'_GratingThickness.png'),
+            graph_path=Path(
+                f'{figure_path}/'
+                f'{batch_name}_{out_string}'
+                f'_Plain.png'))
         batch_dictionary.update(thickness_results)
     return batch_dictionary
 
