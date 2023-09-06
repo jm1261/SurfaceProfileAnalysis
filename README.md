@@ -38,7 +38,7 @@ Step height calculator built using Python 3 to find step height and feature widt
 Language and package requirements can also be found in requirements.txt. The code was built using the following languages and module versions.
 
 * Python 3.6-3.10
-* tk 0.1.0
+* tk 0.1.0 -- don't need this anymore
 * numpy 1.21.4
 * matplotlib 3.5.0
 * scipy 1.7.2

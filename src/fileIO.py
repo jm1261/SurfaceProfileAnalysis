@@ -3,13 +3,38 @@ import numpy as np
 
 
 def load_json(file_path):
-    '''
-    Extract user variables from json dictionary.
-    Args:
-        file_path: <string> path to file
-    Returns:
-        dictionary: <dict> use variables dictionary
-    '''
+    """
+    Loads .json file types.
+
+    Use json python library to load a .json file.
+
+    Parameters
+    ----------
+    file_path : string
+        Path to file.
+
+    Returns
+    -------
+    json file : dictionary
+        .json dictionary file.
+
+    See Also
+    --------
+    read_dektak_file
+    read_afm_file
+    read_thickness_file
+    save_json_dicts
+
+    Notes
+    -----
+    json files are typically dictionaries, as such the function is intended for
+    use with dictionaries stored in .json file types.
+
+    Examples
+    --------
+    my_dictionary = load_json(file_path="/Path/To/File")
+
+    """
     with open(file_path, 'r') as file:
         return json.load(file)
 
@@ -88,9 +113,35 @@ def read_thickness_file(parent_directory,
 
 
 def convert(o):
-    '''
-    Check type of data string
-    '''
+    """
+    Check data type.
+
+    Check type of data string.
+
+    Parameters
+    ----------
+    o : string
+        String to check.
+
+    Returns
+    -------
+    TypeError : Boolean
+        TypeError if string is not suitable.
+
+
+    See Also
+    --------
+    None.
+
+    Notes
+    -----
+    None.
+
+    Examples
+    --------
+    None.
+
+    """
     if isinstance(o, np.generic):
         return o.item()
     raise TypeError
@@ -98,14 +149,38 @@ def convert(o):
 
 def save_json_dicts(out_path,
                     dictionary):
-    '''
-    Save dictionary to json file.
-    Args:
-        out_path: <string> path to file, including file name and extension
-        dictionary: <dict> python dictionary to save out
-    Returns:
-        None
-    '''
+    """
+    Save .json file types.
+
+    Use json python library to save a dictionary to a .json file.
+
+    Parameters
+    ----------
+    out_path : string
+        Path to file.
+    dictionary : dictionary
+        Dictionary to save.
+    
+    Returns
+    -------
+    None
+
+    See Also
+    --------
+    load_json
+
+    Notes
+    -----
+    json files are typically dictionaries, as such the function is intended for
+    use with dictionaries stored in .json file types.
+
+    Examples
+    --------
+    save_json_dicts(
+        out_path="/Path/To/File",
+        dictionary=my_dictionary)
+
+    """
     with open(out_path, 'w') as outfile:
         json.dump(
             dictionary,

@@ -5,6 +5,14 @@ import src.datalevelling as dl
 
 from pathlib import Path
 
+'''
+Need to add widths and feature mode, so something that measures a feature width
+and something that measures both a thickness and a width. Also Andrea not happy
+with the levelling aspect so might want to have that in as an option, i.e.,
+sometimes it is not always necessary to do some levelling, sometimes it's nice
+to just take an average like this code used to.
+'''
+
 
 def batch_dektak_thicks(batch_name,
                         parent_directory,
@@ -18,9 +26,6 @@ def batch_dektak_thicks(batch_name,
     film_thicknesses = []
     for file in file_paths:
         sample_details = fp.sample_information(file_path=file)
-        for key, value in sample_details.items():
-            if key in batch_dictionary.keys():
-                batch_dictionary[key].append(value)
         out_string = sample_details[f'{parent_directory} Secondary String']
         step_results = anal.calculate_dektak_thicks(
             parent_directory=parent_directory,
@@ -47,13 +52,17 @@ if __name__ == '__main__':
         file_string='.csv')
     parent, batches = fp.get_all_batches(file_paths=file_paths)
     for batch, filepaths in batches.items():
-        out_file = Path(f'{directory_paths["Dektak Results Path"]}/{batch}_Dektak.json')
-        results_dictionary = batch_dektak_thicks(
-            batch_name=batch,
-            parent_directory=parent,
-            file_paths=filepaths,
-            plot_files=info['Plot Figures'],
-            figure_path=Path(f'{directory_paths["Dektak Results Path"]}'))
-        io.save_json_dict(
-            out_path=out_file,
-            dictionary=results_dictionary)
+        out_file = Path(
+            f'{directory_paths["Dektak Results Path"]}/{batch}_Dektak.json')
+        if out_file.is_file():
+            pass
+        else:
+            results_dictionary = batch_dektak_thicks(
+                batch_name=batch,
+                parent_directory=parent,
+                file_paths=filepaths,
+                plot_files=info['Plot Figures'],
+                figure_path=Path(f'{directory_paths["Dektak Results Path"]}'))
+            io.save_json_dicts(
+                out_path=out_file,
+                dictionary=results_dictionary)
