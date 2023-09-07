@@ -1,0 +1,24 @@
+{
+  "width": 15,
+  "height": 9,
+  "dpi": 600,
+  "line": "True",
+  "grid": "False",
+  "legend_loc": 0,
+  "legend_col": 1,
+  "legend_size": 10,
+  "axis_fontsize": 15,
+  "title_fontsize": 15,
+  "label_size": 10,
+  "batch_name": "ALD_Test3",
+  "data_path": "\\\\storage.its.york.ac.uk\\physics\\krauss\\Josh\\Post_Doc\\Dektak",
+  "data_files": [
+    "ALD_Test3_1_230830.csv",
+    "ALD_Test3_2_230830.csv",
+    "ALD_Test3_3_230830.csv",
+    "ALD_Test3_4_15force_230907.csv",
+    "ALD_Test3_4_230907.csv",
+    "ALD_Test3_4_Large_230830.csv",
+    "ALD_Test3_4_Small_230830.csv"
+  ]
+}

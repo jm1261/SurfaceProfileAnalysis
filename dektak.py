@@ -5,38 +5,47 @@ import src.datalevelling as dl
 
 from pathlib import Path
 
-'''
-Need to add widths and feature mode, so something that measures a feature width
-and something that measures both a thickness and a width. Also Andrea not happy
-with the levelling aspect so might want to have that in as an option, i.e.,
-sometimes it is not always necessary to do some levelling, sometimes it's nice
-to just take an average like this code used to.
-'''
 
+def step_height(file_paths: list,
+                out_path: str,
+                batch_dictionary: dict) -> dict:
+    """
+    Calculate the step height of a feature for the Bruker Dektak.
 
-def batch_dektak_thicks(batch_name,
-                        parent_directory,
-                        file_paths,
-                        plot_files,
-                        figure_path):
-    batch_dictionary = fp.update_batch_dictionary(
-        parent=parent_directory,
-        batch_name=batch_name,
-        file_paths=file_paths)
+    Level surface profile and calculate individual step height for multiple
+    measurements on the same sample/batch of samples. Take an average.
+
+    Parameters
+    ----------
+    file_paths: list
+        List of files to process as paths.
+    out_path: string
+        Path to save.
+    batch_dictionary: dictionary
+        Batch dictionary containing batch name, file names, and data path. It
+        should also contain the plotting dictionary.
+    
+    Returns
+    -------
+    results_dictionary: dictionary
+        Step heights and errors for individual 
+    See Also
+    --------
+    Notes
+    -----
+    Example
+    -------
+    """
     film_thicknesses = []
     for file in file_paths:
-        sample_details = fp.sample_information(file_path=file)
-        out_string = sample_details[f'{parent_directory} Secondary String']
+        file_name = fp.get_filename(file_path=file)
         step_results = anal.calculate_dektak_thicks(
-            parent_directory=parent_directory,
             file_path=file,
-            file_name=sample_details[f'{parent_directory} File Name'],
-            sample_name=sample_details[f'{parent_directory} Secondary String'],
-            plot_files=plot_files,
-            out_path=Path(
-                f'{figure_path}/{batch_name}_{out_string}_Dektak.png'))
+            file_name=file_name,
+            plot_dict=batch_dictionary,
+            out_path=Path(f'{out_path}/{file_name}_Height.png'))
         batch_dictionary.update(step_results)
-        film_thicknesses.append(step_results[f'{out_string} Thickness'])
+        film_thicknesses.append(step_results[f'{file_name} Thickness'])
     thickness_results = anal.average_step_and_error(x=film_thicknesses)
     results_dictionary = dict(
         batch_dictionary,
@@ -45,24 +54,22 @@ def batch_dektak_thicks(batch_name,
 
 
 if __name__ == '__main__':
+    '''
+    Root setup for Notebooks repository as root directory. Remove '..' to run
+    from script.
+    '''
     root = Path().absolute()
-    info, directory_paths = fp.get_directory_paths(root_path=root)
-    file_paths = fp.get_files_paths(
-        directory_path=directory_paths['Dektak Path'],
-        file_string='.csv')
-    parent, batches = fp.get_all_batches(file_paths=file_paths)
-    for batch, filepaths in batches.items():
-        out_file = Path(
-            f'{directory_paths["Dektak Results Path"]}/{batch}_Dektak.json')
-        if out_file.is_file():
-            pass
-        else:
-            results_dictionary = batch_dektak_thicks(
-                batch_name=batch,
-                parent_directory=parent,
-                file_paths=filepaths,
-                plot_files=info['Plot Figures'],
-                figure_path=Path(f'{directory_paths["Dektak Results Path"]}'))
-            io.save_json_dicts(
-                out_path=out_file,
-                dictionary=results_dictionary)
+    dektak_dict = io.load_json(
+        file_path=Path(
+            f'{root}/SurfaceProfileAnalysis/dektak_dictionary.json'))
+    batch_name = dektak_dict["batch_name"]
+    files = dektak_dict["data_files"]
+    data_path = dektak_dict["data_path"]
+    file_paths = [Path(f'{data_path}/{file}') for file in files]
+    results_dictionary = step_height(
+        file_paths=file_paths,
+        out_path=data_path,
+        batch_dictionary=dektak_dict)
+    io.save_json_dicts(
+        out_path=Path(f'{data_path}/{batch_name}_Height.json'),
+        dictionary=results_dictionary)

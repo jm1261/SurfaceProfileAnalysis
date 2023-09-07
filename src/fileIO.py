@@ -39,16 +39,40 @@ def load_json(file_path):
         return json.load(file)
 
 
-def read_dektak_file(file_path):
-    '''
-    Load Bruker Dektak csv file. Reads output file, looks for Lateral, Position
-    line, ignores other parameters in file.
-    Args:
-        file_path: <string> path to input file
-    Returns:
-        lateral: <array> lateral position array (x-array) [mm]
-        profile: <array> surface profile array (y-array) [nm]
-    '''
+def read_dektak_file(file_path : str) -> list:
+    """
+    Loads Bruker Dektak csv file.
+
+    Reads output file to return lateral (mm) and profile (nm) data.
+
+    Parameters
+    ----------
+    file_path: string
+        Path to file.
+    
+    Returns
+    -------
+    lateral, profile: list
+        Lateral position of the tip in mm, surface profile in nm.
+    
+    See Also
+    --------
+    numpy genfromtxt
+    read_afm_file
+
+    Notes
+    -----
+    Uses the 'Lateral' column header in the Dektak csv file to find the start
+    point of the Dektak profile measurement data. Skips any data levelling, mark
+    position, or calculated step height data from the header of the file which
+    may be present due to the Dektak software. Converts lateral position to mm
+    and profile to nm.
+
+    Example
+    -------
+    None
+
+    """
     with open(file_path) as infile:
         lines = infile.readlines()
         for index, line in enumerate(lines):
@@ -64,15 +88,36 @@ def read_dektak_file(file_path):
     return lateral, profile
 
 
-def read_afm_file(file_path):
-    '''
-    Read Bruker AFM csv or txt file.
-    Args:
-        file_path: <string> path to input file
-    Returns:
-        lateral: <array> lateral position array (x-array) [mm]
-        profile: <array> surface profile array (y-array) [nm]
-    '''
+def read_afm_file(file_path : str) -> list:
+    """
+    Loads Bruker AFM csv file.
+
+    Reads output file to return lateral (mm) and profile (nm) data.
+
+    Parameters
+    ----------
+    file_path: string
+        Path to file.
+    
+    Returns
+    -------
+    lateral, profile: list
+        Lateral position of the tip in mm, surface profile in nm.
+    
+    See Also
+    --------
+    numpy genfromtxt
+    read_dektak_file
+
+    Notes
+    -----
+    Can distinguish between delimiters depending on the AFM save parameters.
+
+    Example
+    -------
+    None
+
+    """
     try:
         lateral, profile = np.genfromtxt(
             fname=file_path,
@@ -88,22 +133,42 @@ def read_afm_file(file_path):
     return lateral, profile
 
 
-def read_thickness_file(parent_directory,
-                        file_path):
-    '''
-    Reads either dektak or AFM file, depending on parent directory name. Must
-    ensure thickness measurements are within a directory called AFM or Dektak.
-    Args:
-        parent_directory: <string> parent directory identifier
-        file_path: <string> path to file
-    Returns:
-        lateral: <array> lateral position array (x-array) [mm]
-        profile: <array> surface profile array (y-array) [nm]
-    '''
-    if parent_directory == 'AFM':
+def read_thickness_file(file_type : str,
+                        file_path : str) -> list:
+    """
+    Reads either Dektak or AFM file.
+    
+    Reads lateral and profile data from Bruker Dektak or AFM file types.
+
+    Parameters
+    ----------
+    file_type, file_path: string
+        "AFM" or "Dektak", path to file.
+    
+    Returns
+    -------
+    lateral, profile: list
+        Lateral position in mm, profile in nm. (x, y data).
+    
+    See Also
+    --------
+    read_afm_file
+    read_dektak_file
+
+    Notes
+    -----
+    Uses the file_type key to access different loading functions for the Bruker
+    AFM and Dektak surface profilometers.
+
+    Example
+    -------
+    None
+
+    """
+    if file_type == 'AFM':
         lateral, profile = read_afm_file(
             file_path=file_path)
-    elif parent_directory == 'Dektak':
+    elif file_type == 'Dektak':
         lateral, profile = read_dektak_file(
             file_path=file_path)
     else:
@@ -147,8 +212,8 @@ def convert(o):
     raise TypeError
 
 
-def save_json_dicts(out_path,
-                    dictionary):
+def save_json_dicts(out_path : str,
+                    dictionary : dict) -> None:
     """
     Save .json file types.
 
