@@ -13,12 +13,8 @@
   "batch_name": "ALD_Test3",
   "data_path": "\\\\storage.its.york.ac.uk\\physics\\krauss\\Josh\\Post_Doc\\Dektak",
   "data_files": [
-    "ALD_Test3_1_230830.csv",
-    "ALD_Test3_2_230830.csv",
-    "ALD_Test3_3_230830.csv",
-    "ALD_Test3_4_15force_230907.csv",
-    "ALD_Test3_4_230907.csv",
-    "ALD_Test3_4_Large_230830.csv",
-    "ALD_Test3_4_Small_230830.csv"
+    "ALD_Test3_1_230908.csv",
+    "ALD_Test3_2_230908.csv",
+    "ALD_Test3_3_230908.csv"
   ]
 }
