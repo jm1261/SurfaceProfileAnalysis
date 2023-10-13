@@ -2,7 +2,7 @@ import numpy as np
 
 from src.userinput import trimindices
 from src.fileIO import read_thickness_file
-from src.plotting import xy_tworois_plot, plotafm
+from src.plotting import xy_tworois_plot, plotafm, xy_roi_plot
 from src.datalevelling import calculated_level_film_thickness
 
 
@@ -187,6 +187,59 @@ def calculate_grating_thickness(x_array,
             out_path=out_path,
             line=True)
     return thickness_results
+
+
+def calculate_dektak_widths(file_path : str,
+                            file_name : str,
+                            out_path : str,
+                            plot_dict : dict) -> dict:
+    """
+    Parameters
+    ----------
+    Returns
+    -------
+    See Also
+    --------
+    Notes
+    -----
+    Example
+    -------
+    """
+    lateral, profile = read_thickness_file(
+        file_type="Dektak",
+        file_path=file_path)
+    region = trimindices(
+        x_array=lateral,
+        y_array=profile,
+        file_name=file_name,
+        region=f'{file_name} Region')
+    x_interest = lateral[
+        region[f'{file_name} Region Trim Index'][0]:
+        region[f'{file_name} Region Trim Index'][1]]
+    width = max(x_interest) - min(x_interest)
+    width_error = standard_addition_error(
+        delta_x=width / 2,
+        delta_y=width / 2)
+    width_results = {
+        f'{file_name} Width': width,
+        f'{file_name} Width Error': width_error}
+    results = dict(
+        region,
+        **width_results)
+    text_string = (
+        f'Width = ({round(width * 1000, 2)}'
+        r'${\pm}$'
+        f'{round(width_error * 1000, 2)})'
+        r'${\mu}$m')
+    xy_roi_plot(
+        x_array=lateral,
+        y_array=profile,
+        x1=min(x_interest),
+        x2=max(x_interest),
+        text_string=text_string,
+        plot_dict=plot_dict,
+        out_path=out_path)
+    return results
 
 
 def calculate_dektak_thicks(file_path : str,

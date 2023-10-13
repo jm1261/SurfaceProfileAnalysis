@@ -474,7 +474,7 @@ def plot_dektak_thicknesses(x_array : list,
         prop={'size': plot_dict["legend_size"]})
     ax1.set_xlabel(
         'Lateral (mm)',
-        fontsize=15,
+        fontsize=plot_dict["axis_fontsize"],
         fontweight='bold',
         color='black')
     ax2.set_xlabel(
