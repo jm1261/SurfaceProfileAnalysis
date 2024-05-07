@@ -78,7 +78,7 @@ def step_height(file_paths : list,
 if __name__ == '__main__':
     '''
     Root setup for Notebooks repository as root directory. Remove '..' to run
-    from script.
+    from file_path=Path() in dektak_dict load.
     '''
     root = Path().absolute()
     dektak_dict = io.load_json(
