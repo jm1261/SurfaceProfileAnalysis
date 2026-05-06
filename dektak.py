@@ -5,6 +5,8 @@ import src.datalevelling as dl
 
 from pathlib import Path
 
+""" FIX WIDTH CALCULATION """
+
 
 def step_widths(file_paths : list,
                 out_path : str,
@@ -93,11 +95,14 @@ if __name__ == '__main__':
             file_paths=file_paths,
             out_path=data_path,
             batch_dictionary=dektak_dict)
+        io.save_json_dicts(
+            out_path=Path(f'{data_path}/{batch_name}_Height.json'),
+            dictionary=results_dictionary)
     elif dektak_dict["process"] == "width":
         results_dictionary = step_widths(
             file_paths=file_paths,
             out_path=data_path,
             batch_dictionary=dektak_dict)
-    io.save_json_dicts(
-        out_path=Path(f'{data_path}/{batch_name}_Height.json'),
-        dictionary=results_dictionary)
+        io.save_json_dicts(
+            out_path=Path(f'{data_path}/{batch_name}_Width.json'),
+            dictionary=results_dictionary)

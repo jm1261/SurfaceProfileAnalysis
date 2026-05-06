@@ -10,10 +10,12 @@
   "axis_fontsize": 15,
   "title_fontsize": 15,
   "label_size": 10,
-  "batch_name": "Sample_AL1",
-  "data_path": "K:\\Josh\\Post_Doc\\Dektak",
+  "batch_name": "CentreRun",
+  "data_path": "K:\\Josh\\Dektak\\VladoSample_JohnLeeds",
   "data_files": [
-    "Sample_AL1_230801.csv"
+    "CentreRun_1_2mg_260401.csv",
+    "CentreRun_1_5mg_260401.csv",
+    "CentreRun_2_2mg_260401.csv"
   ],
-  "process": "height"
+  "process": "width"
 }
